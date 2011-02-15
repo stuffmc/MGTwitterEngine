@@ -56,6 +56,7 @@
 		44F751920E47DDD500858A1B /* MGTwitterLibXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F7518D0E47DDD500858A1B /* MGTwitterLibXMLParser.m */; };
 		44F751930E47DDD500858A1B /* MGTwitterStatusesLibXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F7518E0E47DDD500858A1B /* MGTwitterStatusesLibXMLParser.m */; };
 		44F751A70E47DEC400858A1B /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 44F751A50E47DEC400858A1B /* NSData+Base64.m */; };
+		4A70DBF7130AD02900E0AB2F /* VFTwaatStreamingEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A70DBF6130AD02900E0AB2F /* VFTwaatStreamingEngine.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -182,6 +183,8 @@
 		44F751A00E47DE9100858A1B /* MGTwitterUsersLibXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGTwitterUsersLibXMLParser.h; sourceTree = "<group>"; };
 		44F751A50E47DEC400858A1B /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		44F751A60E47DEC400858A1B /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
+		4A70DBF5130AD02900E0AB2F /* VFTwaatStreamingEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VFTwaatStreamingEngine.h; sourceTree = "<group>"; };
+		4A70DBF6130AD02900E0AB2F /* VFTwaatStreamingEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VFTwaatStreamingEngine.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MGTwitterEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MGTwitterEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C90031BA0D6B796400C38924 /* MGTwitterUsersParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGTwitterUsersParser.h; sourceTree = "<group>"; };
@@ -537,6 +540,8 @@
 		C9FEB1290D609598009AA322 /* MATwitterEngine */ = {
 			isa = PBXGroup;
 			children = (
+				4A70DBF5130AD02900E0AB2F /* VFTwaatStreamingEngine.h */,
+				4A70DBF6130AD02900E0AB2F /* VFTwaatStreamingEngine.m */,
 				C92F28EE0E4DE7BC00CF98F8 /* MGTwitterEngineGlobalHeader.h */,
 				C9811E620D5F69B500720D77 /* MGTwitterEngine.h */,
 				C9811E630D5F69B500720D77 /* MGTwitterEngine.m */,
@@ -582,7 +587,14 @@
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MGTwitterEngine" */;
 			compatibilityVersion = "Xcode 3.0";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* MATwitterIntegration */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -669,6 +681,7 @@
 				1E798A6E118D077E00DDD6D9 /* CJSONSerializer.m in Sources */,
 				1E798A6F118D077E00DDD6D9 /* CSerializedJSONData.m in Sources */,
 				F4763D2A11C1837300A35E7E /* MGTwitterUserListsParser.m in Sources */,
+				4A70DBF7130AD02900E0AB2F /* VFTwaatStreamingEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

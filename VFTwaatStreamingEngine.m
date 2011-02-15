@@ -121,9 +121,19 @@ static VFTwaatStreamingEngine *singleton=nil;
 {
 	NSString *s = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 	if (data.length>2) {
+		#if YAJL_AVAILABLE
 		[MGTwitterStatusesYAJLParser parserWithJSON:data delegate:self 
 							   connectionIdentifier:@"" requestType:VFTwaatStreamingFollowRequest 
 									   responseType:VFTwaatStreamingFollowResponse URL:[self.request URL] deliveryOptions:MGTwitterEngineDeliveryIndividualResultsOption];
+		#elif USE_LIBXML
+		[MGTwitterStatusesLibXMLParser parserWithJSON:data delegate:self 
+							   connectionIdentifier:@"" requestType:VFTwaatStreamingFollowRequest 
+									   responseType:VFTwaatStreamingFollowResponse URL:[self.request URL] deliveryOptions:MGTwitterEngineDeliveryIndividualResultsOption];
+		#else
+		[MGTwitterStatusesParser parserWithJSON:data delegate:self 
+								 connectionIdentifier:@"" requestType:VFTwaatStreamingFollowRequest 
+										 responseType:VFTwaatStreamingFollowResponse URL:[self.request URL] deliveryOptions:MGTwitterEngineDeliveryIndividualResultsOption];
+		#endif
 		NSLog(@"data: %@ end",s);
 		//[receivedData appendData:data];
 	}

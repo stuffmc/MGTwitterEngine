@@ -132,24 +132,36 @@
 
 - (NSString *)getUserInformationForEmail:(NSString *)email; // users/show
 
-//	List Methods
+#pragma mark List methods
 
-//	List the lists of the specified user. Private lists will be included if the 
-//	authenticated users is the same as the user who's lists are being returned.
-- (NSString *)getListsForUser:(NSString *)username;
+-(NSString *) createListFor:(NSString *)username withName:(NSString*)listName;//:user/lists
+-(NSString *) createListFor:(NSString *)username withName:(NSString*)listName mode:(BOOL)isPublic description:(NSString*)description;//:user/lists/:id
+-(NSString *) updateList:(NSString *) listId from:(NSString*) username withName:(NSString*)listName;//:user/lists/:id
+-(NSString *) updateList:(NSString *) listId from:(NSString*) username withName:(NSString*)listName mode:(BOOL)isPublic description:(NSString*)description;//:user/lists/:id
+-(NSString *) getList:(NSString *) listId from:(NSString *)username  startingFromCursor:(MGTwitterEngineCursorID)cursor;//:user/lists/:id
+-(NSString *) getListsFrom:(NSString *)username  startingFromCursor:(MGTwitterEngineCursorID)cursor;//:user/lists
+-(NSString *) deleteList:(NSString *) listId from:(NSString *)username;//:user/lists/:id
+-(NSString *) getStatusesFromList:(NSString *) listId from:(NSString *)username;//:user/lists/:id/statuses
+-(NSString *) getStatusesFromList:(NSString *) listId from:(NSString *)username sinceID:(MGTwitterEngineID)sinceID withMaximumID:(MGTwitterEngineID)maxID startingAtPage:(int)pageNum count:(int)count;//:user/lists/:id/statuses
+-(NSString *) getMembershipsFor:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor;//:user/lists/memberships
+-(NSString *) getSubscriptionsFor:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor;//:user/lists/subscriptions
 
-//	Creates a new list for the authenticated user. Accounts are limited to 20 lists.
-//	Options include:
-//	mode - Whether your list is public or private. Values can be public or private. 
-//		If no mode is specified the list will be public.
-//	description - The description to give the list.
-- (NSString *)createListForUser:(NSString *)username withName:(NSString *)listName withOptions:(NSDictionary *)options;
+#pragma mark List Members methods
 
-//	update an existing list
-- (NSString *)updateListForUser:(NSString *)username withID:(MGTwitterEngineID)listID withOptions:(NSDictionary *)options;
+-(NSString *) getMembersOfList:(NSString *) listId from:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor;//:user/:list_id/members
+-(NSString *) addMember:(MGTwitterEngineID) memberId toList:(NSString *) listId from:(NSString *)username;//:user/:list_id/members
+-(NSString *) addMembers:(NSArray *)usernamesORids toList:(NSString *) listId from:(NSString *)username;//:user/:list_id/create_all
+-(NSString *) deleteMember:(MGTwitterEngineID) memberId fromList:(NSString *) listId from:(NSString*) username;//:user/:list_id/members
+-(NSString *) isUser:(MGTwitterEngineID) userId memberOfList:(NSString *) listId from:(NSString*) username;// :user/:list_id/members/:id
 
-//	Show the specified list. Private lists will only be shown if the authenticated user owns the specified list.
-- (NSString *)getListForUser:(NSString *)username withID:(MGTwitterEngineID)listID;
+#pragma mark List Subscribers methods
+
+-(NSString *) getSubscribersOfList:(NSString *) listId from:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor;//:user/:list_id/subscribers
+-(NSString *) subscribeToList:(NSString *) listId from:(NSString *)username;//:user/:list_id/subscribers
+-(NSString *) unsubscribeToList:(NSString *) listId from:(NSString *)username;//:user/:list_id/subscribers
+-(NSString *) isUser:(MGTwitterEngineID) userId subscriberOfList:(NSString *) listId from:(NSString *)username;// :user/:list_id/subscribers/:id
+
+
 
 // Direct Message methods
 

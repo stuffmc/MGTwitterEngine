@@ -1548,84 +1548,212 @@
                            responseType:MGTwitterDirectMessage];
 }
 
-#pragma mark Lists
- 
-- (NSString *)getListsForUser:(NSString *)username
-{
-	NSString *path = [NSString stringWithFormat:@"%@/lists.%@", username, API_FORMAT];
-    
-    return [self _sendRequestWithMethod:nil path:path queryParameters:nil body:nil 
-                            requestType:MGTwitterUserListsRequest 
-                           responseType:MGTwitterUserLists];
-}
+#pragma mark List methods
+-(NSString *) createListFor:(NSString *)username withName:(NSString*)listName{
+	NSString *path = [NSString stringWithFormat:@"%@/lists.%@",username, API_FORMAT];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:listName forKey:@"name"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}//:user/lists
+-(NSString *) createListFor:(NSString *)username withName:(NSString*)listName mode:(BOOL)isPublic description:(NSString*)description{
+	NSString *path = [NSString stringWithFormat:@"%@/lists.%@",username, API_FORMAT];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:listName forKey:@"name"];
+	if (!isPublic) {
+		[params setObject:@"private" forKey:@"mode"];
+	}
+	[params setObject:description forKey:@"description"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}//:user/lists/:id
+-(NSString *) updateList:(NSString *) listId from:(NSString*) username withName:(NSString*)listName{
+	NSString *path = [NSString stringWithFormat:@"%@/lists/%@.%@",username, listId,API_FORMAT];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:listName forKey:@"name"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+	
+}//:user/lists/:id
+-(NSString *) updateList:(NSString *) listId from:(NSString*) username withName:(NSString*)listName mode:(BOOL)isPublic description:(NSString*)description{
+	NSString *path = [NSString stringWithFormat:@"%@/lists/%@.%@",username, listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:listName forKey:@"name"];
+	if (!isPublic) {
+		[params setObject:@"private" forKey:@"mode"];
+	}
+	[params setObject:description forKey:@"description"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+	
+}//:user/lists/:id
+-(NSString *) getList:(NSString *) listId from:(NSString *)username  startingFromCursor:(MGTwitterEngineCursorID)cursor{
+	NSString *path = [NSString stringWithFormat:@"%@/lists/%@.%@",username, listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if (cursor >0) 
+		[params setObject:[NSString stringWithFormat:@"%llu", cursor] forKey:@"cursor"];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:params body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}//:user/lists/:id
+-(NSString *) getListsFrom:(NSString *)username  startingFromCursor:(MGTwitterEngineCursorID)cursor{
+	NSString *path = [NSString stringWithFormat:@"%@/lists.%@",username,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if (cursor >0) 
+		[params setObject:[NSString stringWithFormat:@"%llu", cursor] forKey:@"cursor"];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:params body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}//:user/lists
+-(NSString *) deleteList:(NSString *) listId from:(NSString *)username{
+	NSString *path = [NSString stringWithFormat:@"%@/lists/%@.%@",username, listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:@"DELETE" forKey:@"_method"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatDeleteListRequest
+                           responseType:FVTwaatList];
+	
+}//:user/lists/:id
+-(NSString *) getStatusesFromList:(NSString *) listId from:(NSString *)username{
+	NSString *path = [NSString stringWithFormat:@"%@/lists/%@/statuses.%@",username, listId,API_FORMAT];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:nil body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterStatuses];
+	
+}//:user/lists/:id/statuses
+-(NSString *) getStatusesFromList:(NSString *) listId from:(NSString *)username sinceID:(MGTwitterEngineID)sinceID withMaximumID:(MGTwitterEngineID)maxID startingAtPage:(int)pageNum count:(int)count{
+	
+	NSString *path = [NSString stringWithFormat:@"%@/lists/%@/statuses.%@",username, listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if (sinceID > 0) {
+        [params setObject:[NSString stringWithFormat:@"%llu", sinceID] forKey:@"since_id"];
+    }
+    if (maxID > 0) {
+        [params setObject:[NSString stringWithFormat:@"%llu", maxID] forKey:@"max_id"];
+    }
+    if (pageNum > 0) {
+        [params setObject:[NSString stringWithFormat:@"%d", pageNum] forKey:@"page"];
+    }
+    if (count > 0) {
+        [params setObject:[NSString stringWithFormat:@"%d", count] forKey:@"count"];
+    }	
+	return [self _sendRequestWithMethod:nil path:path queryParameters:params body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterStatus];
+	
+}//:user/lists/:id/statuses
+-(NSString *) getMembershipsFor:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor{
+	NSString *path = [NSString stringWithFormat:@"%@/lists/memberships.%@",username,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if (cursor >0)
+		[params setObject:[NSString stringWithFormat:@"%llu", cursor] forKey:@"cursor"];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:params body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}//:user/lists/memberships
+-(NSString *) getSubscriptionsFor:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor{
+	NSString *path = [NSString stringWithFormat:@"%@/lists/subscriptions.%@",username,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if (cursor >0)
+		[params setObject:[NSString stringWithFormat:@"%llu", cursor] forKey:@"cursor"];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:params body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}//:user/lists/subscriptions
 
-- (NSString *)createListForUser:(NSString *)username withName:(NSString *)listName withOptions:(NSDictionary *)options;
-{
-	if (!username || !listName) {
-		NSLog(@"returning nil");
-		return nil;
-	}
-	
-	NSString *path = [NSString stringWithFormat:@"%@/lists.%@", username, API_FORMAT];
-	
-    NSMutableDictionary *queryParameters = [NSMutableDictionary dictionaryWithCapacity:0];
-	if ([options objectForKey:@"mode"]) {
-		[queryParameters setObject:[options objectForKey:@"mode"] forKey:@"mode"];
-	}
-	if ([options objectForKey:@"description"]) {
-		[queryParameters setObject:[options objectForKey:@"description"] forKey:@"description"];
-	}
-	[queryParameters setObject:listName forKey:@"name"];
-    NSString *body = [self _queryStringWithBase:nil parameters:queryParameters prefixed:NO];
-    
-    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path 
-                        queryParameters:queryParameters body:body 
-                            requestType:MGTwitterUserListCreate
-                           responseType:MGTwitterUserLists];
-}
+#pragma mark List Members methods
 
-- (NSString *)updateListForUser:(NSString *)username withID:(MGTwitterEngineID)listID withOptions:(NSDictionary *)options
-{
-	if (!username || !listID) {
-		NSLog(@"returning nil");
-		return nil;
+-(NSString *) getMembersOfList:(NSString *) listId from:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/members.%@",username,listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if (cursor >0)
+		[params setObject:[NSString stringWithFormat:@"%llu", cursor] forKey:@"cursor"];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:params body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterUsers];
+}//:user/:list_id/members
+-(NSString *) addMember:(MGTwitterEngineID) memberId toList:(NSString *) listId from:(NSString *)username{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/members.%@",username,listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:[NSString stringWithFormat:@"%llu", memberId] forKey:@"id"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterUser];
+}//:user/:list_id/members
+-(NSString *) addMembers:(NSArray *)usernamesORids toList:(NSString *) listId from:(NSString *)username{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/create_all.%@",username,listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if ([[usernamesORids objectAtIndex:0] isKindOfClass:[NSString class]]) {
+		[params setObject:[usernamesORids componentsJoinedByString:@","] forKey:@"screen_name"];
+	}else {
+		[params setObject:[usernamesORids componentsJoinedByString:@","] forKey:@"user_id"];
 	}
-	NSString *path = [NSString stringWithFormat:@"%@/lists/%llu.%@", username, listID, API_FORMAT];
-	
-    NSMutableDictionary *queryParameters = [NSMutableDictionary dictionaryWithCapacity:0];
-	if ([options objectForKey:@"name"]) {
-		[queryParameters setObject:[options objectForKey:@"name"] forKey:@"name"];
-	}
-	if ([options objectForKey:@"mode"]) {
-		[queryParameters setObject:[options objectForKey:@"mode"] forKey:@"mode"];
-	}
-	if ([options objectForKey:@"description"]) {
-		[queryParameters setObject:[options objectForKey:@"description"] forKey:@"description"];
-	}
-	
-    NSString *body = [self _queryStringWithBase:nil parameters:queryParameters prefixed:NO];
-    
-    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path 
-                        queryParameters:queryParameters body:body 
-                            requestType:MGTwitterUserListCreate
-                           responseType:MGTwitterUserLists];
-}
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterUsers];
+}//:user/:list_id/create_all
+-(NSString *) deleteMember:(MGTwitterEngineID) memberId fromList:(NSString *) listId from:(NSString*) username{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/members.%@",username,listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:[NSString stringWithFormat:@"%llu", memberId] forKey:@"id"];
+	[params setObject:@"DELETE" forKey:@"_method"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterUser];
+}//:user/:list_id/members
+-(NSString *) isUser:(MGTwitterEngineID) userId memberOfList:(NSString *) listId from:(NSString*) username{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/members/%llu.%@",username,listId,[NSString stringWithFormat:@"%llu", userId],API_FORMAT];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:nil body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}// :user/:list_id/members/:id
 
-- (NSString *)getListForUser:(NSString *)username withID:(MGTwitterEngineID)listID
-{
-	if (!username || !listID) {
-		NSLog(@"returning nil");
-		return nil;
-	}
-	NSString *path = [NSString stringWithFormat:@"%@/lists/%llu.%@", username, listID, API_FORMAT];
+#pragma mark List Subscribers methods
+
+-(NSString *) getSubscribersOfList:(NSString *) listId from:(NSString *)username startingFromCursor:(MGTwitterEngineCursorID)cursor{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/subscribers.%@",username,listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	if (cursor >0)
+		[params setObject:[NSString stringWithFormat:@"%llu", cursor] forKey:@"cursor"];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:params body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterUsers];
+}//:user/:list_id/subscribers
+-(NSString *) subscribeToList:(NSString *) listId from:(NSString *)username{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/subscribers.%@",username,listId,API_FORMAT];
+	return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:nil body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:MGTwitterUsers];
+}//:user/:list_id/subscribers
+-(NSString *) unsubscribeToList:(NSString *) listId from:(NSString *)username{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/subscribers.%@",username,listId,API_FORMAT];
+	NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:0];
+	[params setObject:@"DELETE" forKey:@"_method"];
+	NSString *body = [self _queryStringWithBase:nil parameters:params prefixed:NO];
+    return [self _sendRequestWithMethod:HTTP_POST_METHOD path:path queryParameters:params body:body
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
+}//:user/:list_id/subscribers
+-(NSString *) isUser:(MGTwitterEngineID) userId subscriberOfList:(NSString *) listId from:(NSString *)username{
+	NSString *path = [NSString stringWithFormat:@"%@/%@/subscribers/%llu.%@",username,listId,[NSString stringWithFormat:@"%llu", userId],API_FORMAT];
+    return [self _sendRequestWithMethod:nil path:path queryParameters:nil body:nil
+                            requestType:FVTwaatListRequest
+                           responseType:FVTwaatList];
 	
-    NSString *body = [self _queryStringWithBase:nil parameters:nil prefixed:NO];
-    
-    return [self _sendRequestWithMethod:nil path:path 
-                        queryParameters:nil body:body 
-                            requestType:MGTwitterUserListCreate
-                           responseType:MGTwitterUserLists];
-}
+}// :user/:list_id/subscribers/:id
+
 
 #pragma mark Friendship methods
 
