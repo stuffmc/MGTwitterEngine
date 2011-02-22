@@ -1,0 +1,6 @@
+[submodule "TouchJSON"]
+	path = TouchJSON
+	url = https://github.com/mrevilme/TouchJSON.git
+[submodule "oauthconsumer"]
+	path = oauthconsumer
+	url = git@github.com:stuffmc/oauthconsumer.git
